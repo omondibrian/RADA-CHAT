@@ -10,7 +10,7 @@ app.set("PORT", process.env.PORT || 8000);
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static("uploads"));
+app.use("/rada/uploads", express.static("uploads"));
 app.use(cors());
 
 //upload routes
