@@ -14,9 +14,9 @@ app.use("/uploads", express.static("uploads"));
 app.use(cors());
 
 //upload routes
-app.use("/api/v1/uploads", uploadRoutes);
+app.use("/rada/api/v1/uploads", uploadRoutes);
 
-app.use("/api/v1/chats", chatRoutes);
+app.use("/rada/api/v1/chats", chatRoutes);
 app.get("/", (req, res) => {
   res.send("hello from rada");
 });
