@@ -1,4 +1,5 @@
 import Model from '../../model/chat.model';
+import { IPusherProvider } from '../../utilitties/pusher';
 
 export interface IChat {
   id?: string;
@@ -9,10 +10,11 @@ export interface IChat {
 //add database intergrations
 
 export class Chats {
-
+  constructor(private readonly pusher:IPusherProvider){}
  async  createChat(chat: IChat) {
     const newChat = new Model(chat);
     const result = await newChat.save();
+    await this.pusher.newChat(result);
     return result;
   }
 

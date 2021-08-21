@@ -2,10 +2,12 @@ import express from "express";
 import * as SocketIO from "socket.io";
 import { Server, createServer } from "http";
 import mongoose from "mongoose";
+import Pusher from "pusher";
 import Application from "./src/app";
 import { chatEvent } from "./src/utilitties/constansts";
 import { Chats, IChat } from "./src/controller/chat";
 import { config } from "dotenv";
+import PusherServiceProvider from "./src/utilitties/pusher";
 
 config();
 
@@ -13,6 +15,7 @@ export class ApplicationServer {
   private server: Server;
   private io!: SocketIO.Server;
   private user: Map<string, string> = new Map();
+
   constructor(
     private readonly _app: express.Application,
     private readonly chatController: Chats
@@ -57,7 +60,7 @@ export class ApplicationServer {
         this.io.emit(chatEvent.online, userName);
       });
 
-      //listen for typing event
+    
       socket.on(chatEvent.typing, async () => {
         const userName = this.user.get(socket.id) as string;
         const result = `${userName} is typing`;
@@ -89,6 +92,9 @@ export class ApplicationServer {
   }
 }
 
-const application = new ApplicationServer(Application, new Chats());
+const application = new ApplicationServer(
+  Application,
+  new Chats(new PusherServiceProvider())
+);
 
 application.listen();
