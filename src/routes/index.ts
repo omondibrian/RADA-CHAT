@@ -16,7 +16,7 @@ const upload = multer({ storage: storage });
 
 const chatRoutes = Router();
 const controller = new Chats(new PusherServiceProvider());
-chatRoutes.post("/", upload.single("media"), async (req, res, next) => {
+chatRoutes.post("/new", upload.single("media"), async (req, res, next) => {
   try {
     let chat: IChat;
     if (req.file) {
@@ -41,25 +41,41 @@ chatRoutes.post("/", upload.single("media"), async (req, res, next) => {
 chatRoutes.delete("/:id", async (req, res, next) => {
   try {
     const result = await controller.deleteChat(req.params.id);
-    res.json({ chat: result });
+    res.json({ isDeleted: result, id: req.params.id });
   } catch (e: any) {
     next(e);
   }
 });
 
-chatRoutes.get("/:id", async (req, res, next) => {
+chatRoutes.get("/:id", async (req: any, res, next) => {
   try {
-    const result = await controller.fetchChat(parseInt(req.params.id));
-    res.json({ chat: result });
+    const result = await controller.fetchChat(req.params.id);
+    if (req.token) {
+      res.json({
+        result,
+        token: req.token,
+      });
+    } else {
+      res.json({ chat: result });
+    }
   } catch (e: any) {
     next(e);
   }
 });
 
-chatRoutes.get("/", async (req, res, next) => {
+chatRoutes.get("/", async (req: any, res, next) => {
   try {
     const result = await controller.fetchChats();
-    res.json({ chats: result });
+    if (req.token) {
+      console.log(req.token);
+
+      res.json({
+        chats: result,
+        token: req.token,
+      });
+    } else {
+      res.json({ chats: result });
+    }
   } catch (e: any) {
     next(e);
   }

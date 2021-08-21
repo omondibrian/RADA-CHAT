@@ -14,9 +14,9 @@ export class Chats {
  async  createChat(chat: IChat) {
     const newChat = new Model(chat);
     const result = await newChat.save();
-    await this.pusher.newChat(result);
+    this.pusher.newChat(result);
     return result;
-  }
+  } 
 
   async deleteChat(chatId: string) { 
    const chat = await Model.findOneAndRemove(
@@ -26,7 +26,7 @@ export class Chats {
     return chat ? true : false;
   }
 
-  async fetchChat(id: number) {
+  async fetchChat(id: string) {
     const result = await Model.findById(id);
     return result;
   }
